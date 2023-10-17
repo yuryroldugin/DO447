@@ -1,0 +1,66 @@
+---
+- name: Using the uri module to add a survey
+  hosts: tower
+  gather_facts: false
+
+  tasks:
+
+  - name: Add a survey to the existing Job Template using the uri module
+    uri:
+      url: "https://{{ tower_fqdn }}/api/v2/job_templates/{{ copy_template_name | urlencode }}/survey_spec/"
+      validate_certs: no
+      method: POST
+      return_content: yes
+      force_basic_auth: yes
+      user: "{{ tower_user }}"
+      password: "{{ tower_password }}"
+      status_code: 200
+      body:
+        name: "What is the purpose of this deployment?"
+        description: "This purpose will be displayed in the welcoming message"
+        spec:
+          - type: "text"
+            question_name: "What is the purpose of this deployment?"
+            question_description: "This purpose will be displayed in the welcoming message"
+            variable: "deployment_purpose"
+            required: true
+            choices: ""
+            new_question: true
+            min: 1
+            max: 40
+            default: "Testing"
+      body_format: json
+
+  - name: Enable the survey
+    uri:
+      url: "https://{{ tower_fqdn }}/api/v2/job_templates/{{ copy_template_name | urlencode }}/"
+      validate_certs: no
+      method: PATCH
+      return_content: yes
+      force_basic_auth: yes
+      user: "{{ tower_user }}"
+      password: "{{ tower_password }}"
+      status_code: 200
+      body:
+        survey_enabled: true
+      body_format: json
+
+  - name: Start a new Ansible Tower Job using the uri module
+    uri:
+      url: "https://{{ tower_fqdn }}/api/v2/job_templates/{{ copy_template_name | urlencode }}/launch/"
+      validate_certs: no
+      method: POST
+      return_content: yes
+      force_basic_auth: yes
+      user: "{{ tower_user }}"
+      password: "{{ tower_password }}"
+      status_code: [201, 202]
+      body:
+        inventory: 4
+        extra_vars:
+          deployment_purpose: "Testing"
+      body_format: json
+
+    tags:
+      - never
+      - with_variable

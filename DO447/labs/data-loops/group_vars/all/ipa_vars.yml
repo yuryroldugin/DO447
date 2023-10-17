@@ -1,0 +1,8 @@
+ipa_server: utility.lab.example.com
+ipa_validate_certs: no
+
+ipa_admin_user: admin
+
+# ipa_admin_pass is defined in the
+# Ansible Vault (vault.yml) file.
+# DO NOT DEFINE IN PLAINTEXT HERE.

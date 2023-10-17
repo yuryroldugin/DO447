@@ -1,0 +1,20 @@
+---
+- name: Add Users To IDM
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Create Users
+      ipa_user:
+        name: "{{ item.user}}"
+        givenname: "{{ item.firstname }}"
+        sn: "{{ item.surname }}"
+        displayname: "{{ item.firstname + ' ' + item.surname }}"
+        sshpubkey: "{{ lookup('file', item.pub_key_file) }}"
+        state: present
+        ipa_host: "{{ ipa_server }}"
+        ipa_user: "{{ ipa_admin_user }}"
+        ipa_pass: "{{ ipa_admin_pass }}"
+        validate_certs: "{{ ipa_validate_certs }}"
+      loop: "{{ users }}"
+
+

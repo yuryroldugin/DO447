@@ -1,0 +1,34 @@
+---
+- name: Using the uri module to connect to tower
+  hosts: tower
+  gather_facts: false
+
+  tasks:
+    - name: Copy an existing Ansible Tower Job Template using the uri module
+      uri:
+        url: "https://{{ tower_fqdn }}/api/v2/job_templates/{{ template_name | urlencode }}/copy/"
+        validate_certs: no
+        method: POST
+        return_content: yes
+        force_basic_auth: yes
+        user: "{{ tower_user }}"
+        password: "{{ tower_password }}"
+        status_code: [201, 202]
+        body:
+          name: "{{ copy_template_name }}"
+        body_format: json
+      register: copy
+
+    - name: Start a new Ansible Tower Job using the uri module
+      uri:
+        url: "https://{{ tower_fqdn }}/api/v2/job_templates/{{ copy_template_name | urlencode }}/launch/"
+        validate_certs: no
+        method: POST
+        return_content: yes
+        force_basic_auth: yes
+        user: "{{ tower_user }}"
+        password: "{{ tower_password }}"
+        status_code: [201, 202]
+        body:
+          inventory: "{{ copy.json.inventory }}"
+        body_format: json

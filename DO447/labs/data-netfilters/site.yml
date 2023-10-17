@@ -1,0 +1,5 @@
+- name: Tasks for netfilter guided exercise
+  hosts: servera.lab.example.com
+  roles:
+    - role: netfilters
+

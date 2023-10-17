@@ -1,0 +1,5 @@
+echo "use {{ item.1 }}" | \
+mysql -u {{ item.0.username }} \
+      -p{{ user_passwords[item.0.username] }} \
+      -h {{ inventory_hostname }}
+

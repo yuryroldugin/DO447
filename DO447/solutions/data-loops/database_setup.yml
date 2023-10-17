@@ -1,0 +1,31 @@
+---
+- name: Enable Firewalld
+  firewalld:
+    service: mysql
+    state: enabled
+    permanent: yes
+    immediate:  yes
+
+- name: Install MySQL
+  yum:
+    name:
+      - mysql
+      - mysql-common
+      - mysql-server
+      - python2-PyMySQL
+      - python3-PyMySQL
+    state: present
+
+- name: Start and enable the MySQL service
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: Ensure databases exist
+  mysql_db:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ database_list }}"
+
+

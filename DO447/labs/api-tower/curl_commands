@@ -1,0 +1,10 @@
+
+curl -X GET --user admin:redhat https://tower.lab.example.com/api/v2/job_templates/?name="Demo Job Template" -k -s | json_pp
+
+# Replace the ID (5 here) by the ID of your job template --------------------------+
+#                                                                                  |
+curl -X GET --user admin:redhat https://tower.lab.example.com/api/v2/job_templates/5/launch/ -k -s | json_pp
+
+# Replace the ID (5 here) by the ID of your job template ---------------------------+
+#                                                                                   |
+curl -X POST --user admin:redhat https://tower.lab.example.com/api/v2/job_templates/5/launch/ -k -s | json_pp
